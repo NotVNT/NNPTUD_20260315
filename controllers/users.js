@@ -1,7 +1,7 @@
 let userModel = require("../schemas/users");
 let bcrypt = require('bcrypt')
 let jwt = require('jsonwebtoken')
-let fs = require('fs')
+let { privateKey } = require('../utils/jwtkey')
 
 module.exports = {
     CreateAnUser: async function (username, password, email, role, fullName, avatarUrl, status, loginCount) {
@@ -45,7 +45,8 @@ module.exports = {
             if (bcrypt.compareSync(password, user.password)) {
                 return jwt.sign({
                     id: user.id
-                }, 'secret', {
+                }, privateKey, {
+                    algorithm: 'RS256',
                     expiresIn: '1d'
                 })
             } else {
